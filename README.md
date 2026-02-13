@@ -60,6 +60,22 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
 - **Content**: Sanity CMS (Mocked for dev)
 - **Analytics**: GA4, PostHog, Sentry
 
+### Design Decision: TypeScript vs Rust Editor
+
+You might notice the code editor uses **TypeScript** instead of Rust for Solana lessons.
+
+1.  **Browser Capabilities**: Running a full Rust toolchain (cargo, rustc) in-browser requires heavy WebAssembly binaries (GBs of data) or a remote server, which adds significant latency and cost.
+2.  **Educational Focus**: 50% of Solana development is client-side interaction (Wallets, RPCs, Accounts). We focus on mastering `@solana/web3.js` first, which runs natively and instantly in the browser.
+3.  **Future Support**: A Rust WASM runner is planned for V2 (see [Future Improvements](docs/FUTURE_IMPROVEMENTS.md)).
+
+## 📸 More Screenshots
+
+### Web3 Rewards (Devnet)
+
+| Course Completion | Minted Credential (cNFT) |
+|Data | Data |
+| ![Completion](app/public/screenshots/minted_collection_course_completion.png) | ![Credential](app/public/screenshots/minted_collectible.png) |
+
 ## 🏁 Getting Started
 
 1. **Clone the repository**
