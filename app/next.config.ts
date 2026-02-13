@@ -49,6 +49,7 @@ const nextConfig: NextConfig = {
             value: 'origin-when-cross-origin',
           },
           {
+            key: 'Permissions-Policy',
             value: "camera=(), microphone=(), geolocation=()",
           },
         ],
