@@ -81,9 +81,11 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
    Copy `.env.example` to `.env.local` and add your keys:
 
    ```env
-   NEXT_PUBLIC_HELIUS_RPC=https://mainnet.helius-rpc.com/?api-key=your-key
+   NEXT_PUBLIC_HELIUS_RPC=https://devnet.helius-rpc.com/?api-key=your-key
    GROQ_API_KEY=gsk_...
    ```
+
+   > **Note**: This project works on **Solana Devnet**. Ensure your RPC supports it.
 
 4. **Run Development Server**
 
@@ -99,6 +101,33 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
 - `src/components`: React Components (UI, Gamification, Editor)
 - `src/lib`: Logic for Content, Execution, and Web3
 - `messages`: i18n Translation files
+
+## 📚 Documentation
+
+- [**System Architecture**](docs/ARCHITECTURE.md): Detailed system design, data flows, and account structure.
+- [**Future Improvements**](docs/FUTURE_IMPROVEMENTS.md): Planned V2/V3 features and backlog.
+- [**Contributing Guide**](CONTRIBUTING.md): How to add courses and translations.
+- [**AI Manual**](CLAUDE.md): Context for AI agents.
+
+## 🧪 How to Test Web3 Features
+
+Since this project runs on **Solana Devnet**, you can test all features for free.
+
+### 1. Connect Wallet
+
+- Click "Connect Wallet" in the top right.
+- Ensure your wallet (Phantom/Solflare) is set to **Devnet**.
+- You will see your **XP Balance** (Soulbound Token) in the navbar.
+
+### 2. Earn XP & Credentials
+
+1. Go to **Courses** and select a course (e.g., "Solana 101").
+2. Complete all lessons (Video or Text).
+3. On the final lesson, click **"Complete & Mint"**.
+4. **Approve the Transaction**: This will:
+   - Mint a **cNFT Credential** to your wallet (via Helius).
+   - Airdrop **XP Tokens** to your wallet.
+5. Check your **Profile** or **Leaderboard** to see your updated stats!
 
 ## 🤝 Contributing
 
