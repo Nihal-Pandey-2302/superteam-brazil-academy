@@ -4,7 +4,7 @@
 
 The ultimate Solana Learning Management System (LMS) for Latin America. Built for the Superteam Brazil Bounty.
 
-## 🔗 [Live Demo](https://academy.superteam.fun) | [GitHub](https://github.com/superteam-brazil/academy-frontend)
+## 🔗 [Live Demo](https://superteam-brazil-academy.vercel.app/en) | [GitHub](https://github.com/superteam-brazil/academy-frontend)
 
 ## 🚀 Features
 
@@ -15,23 +15,33 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
 - **Premium Design**: "Cyfrin Updraft" quality dark-mode UI with glassmorphism and animations.
 - **Multi-language**: Native support for PT-BR, ES, and EN.
 
-## 📸 Screenshots
+### Student Experience
 
-### Dashboard
+| Landing Page | Dashboard |
+|Data | Data |
+| ![Landing](public/screenshots/landing_page.png) | ![Dashboard](public/screenshots/dashboard.png) |
 
-![Dashboard](./docs/screenshots/dashboard.png)
+| Course Catalog | Single Course |
+|Data | Data |
+| ![Courses](public/screenshots/courses_page.png) | ![Course](public/screenshots/single_course_page.png) |
 
-### Lesson View with Code Editor
+| Interactive Lesson | AI Helper |
+|Data | Data |
+| ![Reading](public/screenshots/reading_lesson_page.png) | ![AI Helper](public/screenshots/codinglesson_with_AI_helper.png) |
 
-![Lesson](./docs/screenshots/lesson.png)
+| Video Lesson | Leaderboard |
+|Data | Data |
+| ![Video](public/screenshots/lesson_page_with_video.png) | ![Leaderboard](public/screenshots/leaderboard.png) |
 
-### Leaderboard
+### Admin Dashboard
 
-![Leaderboard](./docs/screenshots/leaderboard.png)
+| Overview | Course Management |
+|Data | Data |
+| ![Admin Overview](public/screenshots/admin_dasboard_overview.png) | ![Admin Course](public/screenshots/admin_dashboard_course.png) |
 
-### Mobile View
-
-![Mobile](./docs/screenshots/mobile.png)
+| Curriculum Editor |
+|Data |
+| ![Curriculum](public/screenshots/admin_dashboard_curriculum_edito.png) |
 
 ## ⚡ Performance
 
