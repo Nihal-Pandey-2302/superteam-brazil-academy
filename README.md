@@ -94,6 +94,16 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to add new courses or translations.
 
+## 🤖 AI-Assisted Development
+
+This project includes a `CLAUDE.md` file which serves as a context manual for AI coding assistants (like Cursor, GitHub Copilot, or Claude). It contains:
+
+- **Project Context**: Architecture, Tech Stack, and Design Patterns.
+- **Rules**: Coding standards and strict "no-slop" guidelines.
+- **Commands**: Shortcuts for common development tasks.
+
+If you are using an AI tool to maintain this repo, point it to `CLAUDE.md` first!
+
 ## 📄 License
 
 MIT © Superteam Brazil
