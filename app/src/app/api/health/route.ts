@@ -15,6 +15,7 @@ export async function GET() {
   const envCheck = {
     hasMongoUri: !!process.env.MONGODB_URI,
     hasSolanaKey: !!process.env.SOLANA_PRIVATE_KEY,
+    hasXpMintAddress: !!process.env.NEXT_PUBLIC_XP_MINT_ADDRESS,
     mongoConnectionState: mongoose.connection.readyState,
     nodeEnv: process.env.NODE_ENV,
     error,
