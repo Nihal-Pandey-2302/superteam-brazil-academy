@@ -19,29 +19,29 @@ The ultimate Solana Learning Management System (LMS) for Latin America. Built fo
 
 | Landing Page | Dashboard |
 |Data | Data |
-| ![Landing](public/screenshots/landing_page.png) | ![Dashboard](public/screenshots/dashboard.png) |
+| ![Landing](app/public/screenshots/landing_page.png) | ![Dashboard](app/public/screenshots/dashboard.png) |
 
 | Course Catalog | Single Course |
 |Data | Data |
-| ![Courses](public/screenshots/courses_page.png) | ![Course](public/screenshots/single_course_page.png) |
+| ![Courses](app/public/screenshots/courses_page.png) | ![Course](app/public/screenshots/single_course_page.png) |
 
 | Interactive Lesson | AI Helper |
 |Data | Data |
-| ![Reading](public/screenshots/reading_lesson_page.png) | ![AI Helper](public/screenshots/codinglesson_with_AI_helper.png) |
+| ![Reading](app/public/screenshots/reading_lesson_page.png) | ![AI Helper](app/public/screenshots/codinglesson_with_AI_helper.png) |
 
 | Video Lesson | Leaderboard |
 |Data | Data |
-| ![Video](public/screenshots/lesson_page_with_video.png) | ![Leaderboard](public/screenshots/leaderboard.png) |
+| ![Video](app/public/screenshots/lesson_page_with_video.png) | ![Leaderboard](app/public/screenshots/leaderboard.png) |
 
 ### Admin Dashboard
 
 | Overview | Course Management |
 |Data | Data |
-| ![Admin Overview](public/screenshots/admin_dasboard_overview.png) | ![Admin Course](public/screenshots/admin_dashboard_course.png) |
+| ![Admin Overview](app/public/screenshots/admin_dasboard_overview.png) | ![Admin Course](app/public/screenshots/admin_dashboard_course.png) |
 
 | Curriculum Editor |
 |Data |
-| ![Curriculum](public/screenshots/admin_dashboard_curriculum_edito.png) |
+| ![Curriculum](app/public/screenshots/admin_dashboard_curriculum_edito.png) |
 
 ## ⚡ Performance
 
