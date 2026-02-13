@@ -38,17 +38,28 @@ Quick-reference for developers. Full details in [SPEC.md](./SPEC.md).
 
 ---
 
+## Routing & Internationalization
+
+**CRITICAL RULE**: ALL navigation must use the router from `@/i18n/routing`.
+
+- **Do NOT use**: `import { useRouter, usePathname, Link } from 'next/navigation'` (except for `useParams` which is safe).
+- **ALWAYS use**: `import { useRouter, usePathname, Link } from '@/i18n/routing'`.
+
+This ensures that the locale prefix (e.g. `/pt-BR/...`) is preserved. Failure to do so will result in 404 errors.
+
+---
+
 ## Account Map
 
 ### PDA Derivation
 
-| Account | Seeds | Owner | Closeable |
-| --- | --- | --- | --- |
-| Config | `["config"]` | Program | No |
-| Course | `["course", course_id.as_bytes()]` | Program | No |
-| LearnerProfile | `["learner", user.key()]` | Program | No |
-| Enrollment | `["enrollment", course_id.as_bytes(), user.key()]` | Program | Yes |
-| Credential | `["credential", learner.key(), track_id.to_le_bytes()]` | Light Protocol | N/A (compressed) |
+| Account        | Seeds                                                   | Owner          | Closeable        |
+| -------------- | ------------------------------------------------------- | -------------- | ---------------- |
+| Config         | `["config"]`                                            | Program        | No               |
+| Course         | `["course", course_id.as_bytes()]`                      | Program        | No               |
+| LearnerProfile | `["learner", user.key()]`                               | Program        | No               |
+| Enrollment     | `["enrollment", course_id.as_bytes(), user.key()]`      | Program        | Yes              |
+| Credential     | `["credential", learner.key(), track_id.to_le_bytes()]` | Light Protocol | N/A (compressed) |
 
 ### Account Relationships
 
@@ -212,6 +223,7 @@ Backend                         Photon Indexer              Solana
 ```
 
 **Lookup tables to include:** (reduces TX size for ZK Compression accounts)
+
 - Mainnet: `9NYFyEqPkyXUhkerbGHXUXkvb4qpzeEdHuGpgbgpH1NJ`
 - Devnet: `qAJZMgnQJ8G6vA3WRcjD9Jan1wtKkaCFWLWskxJrR5V`
 
@@ -221,24 +233,24 @@ Backend                         Photon Indexer              Solana
 
 Which accounts each instruction reads/writes:
 
-| Instruction | Config | Course | Learner | Enrollment | Credential | XP Mint | Token Accts |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| initialize | **W** | | | | | | |
-| create_season | **W** | | | | | **W** (create) | |
-| close_season | **W** | | | | | | |
-| update_config | **W** | | | | | | |
-| create_course | R | **W** (create) | | | | | |
-| update_course | | **W** | | | | | |
-| init_learner | | | **W** (create) | | | | |
-| enroll | | R | | **W** (create) | | | |
-| unenroll | | | | **W** (close) | | | |
-| complete_lesson | R | R | **W** | **W** | | R | **W** (learner) |
-| finalize_course | R | **W** | **W** | **W** | | R | **W** (learner + creator) |
-| issue_credential | R | R | | R | **W** | | |
-| claim_achievement | R | | **W** | | | R | **W** (learner) |
-| award_streak_freeze | R | | **W** | | | | |
-| register_referral | | | **W** (both) | | | | |
-| close_enrollment | | | | **W** (close) | | | |
+| Instruction         | Config | Course         | Learner        | Enrollment     | Credential | XP Mint        | Token Accts               |
+| ------------------- | ------ | -------------- | -------------- | -------------- | ---------- | -------------- | ------------------------- |
+| initialize          | **W**  |                |                |                |            |                |                           |
+| create_season       | **W**  |                |                |                |            | **W** (create) |                           |
+| close_season        | **W**  |                |                |                |            |                |                           |
+| update_config       | **W**  |                |                |                |            |                |                           |
+| create_course       | R      | **W** (create) |                |                |            |                |                           |
+| update_course       |        | **W**          |                |                |            |                |                           |
+| init_learner        |        |                | **W** (create) |                |            |                |                           |
+| enroll              |        | R              |                | **W** (create) |            |                |                           |
+| unenroll            |        |                |                | **W** (close)  |            |                |                           |
+| complete_lesson     | R      | R              | **W**          | **W**          |            | R              | **W** (learner)           |
+| finalize_course     | R      | **W**          | **W**          | **W**          |            | R              | **W** (learner + creator) |
+| issue_credential    | R      | R              |                | R              | **W**      |                |                           |
+| claim_achievement   | R      |                | **W**          |                |            | R              | **W** (learner)           |
+| award_streak_freeze | R      |                | **W**          |                |            |                |                           |
+| register_referral   |        |                | **W** (both)   |                |            |                |                           |
+| close_enrollment    |        |                |                | **W** (close)  |            |                |                           |
 
 R = read, **W** = write, (create) = init, (close) = close account
 
@@ -246,36 +258,36 @@ R = read, **W** = write, (create) = init, (close) = close account
 
 ## Account Sizes
 
-| Account | Discriminator | Data | Reserved | Total | Rent |
-| --- | --- | --- | --- | --- | --- |
-| Config | 8 | 143 | 32 | ~183 | ~0.002 SOL |
-| Course | 8 | ~206 | 16 | ~230 | ~0.002 SOL |
-| LearnerProfile | 8 | ~87 | 16 | ~111 | ~0.001 SOL |
-| Enrollment | 8 | ~91 | 0 | ~99 | ~0.001 SOL |
-| Credential | — | ~88 | 0 | ~88 | 0 SOL |
+| Account        | Discriminator | Data | Reserved | Total | Rent       |
+| -------------- | ------------- | ---- | -------- | ----- | ---------- |
+| Config         | 8             | 143  | 32       | ~183  | ~0.002 SOL |
+| Course         | 8             | ~206 | 16       | ~230  | ~0.002 SOL |
+| LearnerProfile | 8             | ~87  | 16       | ~111  | ~0.001 SOL |
+| Enrollment     | 8             | ~91  | 0        | ~99   | ~0.001 SOL |
+| Credential     | —             | ~88  | 0        | ~88   | 0 SOL      |
 
 ---
 
 ## Compute Unit Budget
 
-| Instruction | CU Budget | Primary Cost |
-| --- | --- | --- |
-| initialize | 5K | PDA creation |
-| create_season | 50K | Token-2022 mint + extensions |
-| close_season | 5K | Flag update |
-| update_config | 5K | Field updates |
-| create_course | 15K | PDA creation |
-| update_course | 10K | Field updates |
-| init_learner | 5K | PDA creation |
-| enroll | 15K | PDA creation + prerequisite check |
-| unenroll | 5K | Account close |
-| complete_lesson | 40K | Bitmap + Token-2022 CPI + streak |
-| finalize_course | 100K | Bitmap verify + 2x Token-2022 CPI |
-| issue_credential | 200-300K | ZK Compression CPI |
-| claim_achievement | 30K | Bitmap + Token-2022 CPI |
-| award_streak_freeze | 5K | Counter increment |
-| register_referral | 10K | Two account updates |
-| close_enrollment | 5K | Account close |
+| Instruction         | CU Budget | Primary Cost                      |
+| ------------------- | --------- | --------------------------------- |
+| initialize          | 5K        | PDA creation                      |
+| create_season       | 50K       | Token-2022 mint + extensions      |
+| close_season        | 5K        | Flag update                       |
+| update_config       | 5K        | Field updates                     |
+| create_course       | 15K       | PDA creation                      |
+| update_course       | 10K       | Field updates                     |
+| init_learner        | 5K        | PDA creation                      |
+| enroll              | 15K       | PDA creation + prerequisite check |
+| unenroll            | 5K        | Account close                     |
+| complete_lesson     | 40K       | Bitmap + Token-2022 CPI + streak  |
+| finalize_course     | 100K      | Bitmap verify + 2x Token-2022 CPI |
+| issue_credential    | 200-300K  | ZK Compression CPI                |
+| claim_achievement   | 30K       | Bitmap + Token-2022 CPI           |
+| award_streak_freeze | 5K        | Counter increment                 |
+| register_referral   | 10K       | Two account updates               |
+| close_enrollment    | 5K        | Account close                     |
 
 ---
 
@@ -300,13 +312,13 @@ On-chain:                           Backend:
 
 ## Off-Chain Dependencies
 
-| Service | Purpose | Fallback |
-| --- | --- | --- |
-| Helius DAS API | XP leaderboard, token indexing | Custom indexer on transaction logs |
+| Service             | Purpose                             | Fallback                             |
+| ------------------- | ----------------------------------- | ------------------------------------ |
+| Helius DAS API      | XP leaderboard, token indexing      | Custom indexer on transaction logs   |
 | Photon (via Helius) | Credential queries, validity proofs | Cache credential state in backend DB |
-| Arweave | Course content, credential metadata | Content is immutable once uploaded |
-| Squads | Multisig for platform authority | Single signer (reduced security) |
+| Arweave             | Course content, credential metadata | Content is immutable once uploaded   |
+| Squads              | Multisig for platform authority     | Single signer (reduced security)     |
 
 ---
 
-*For full implementation details, see [SPEC.md](./SPEC.md). For build order, see [IMPLEMENTATION_ORDER.md](./IMPLEMENTATION_ORDER.md). For deferred features, see [FUTURE_IMPROVEMENTS.md](./FUTURE_IMPROVEMENTS.md).*
+_For full implementation details, see [SPEC.md](./SPEC.md). For build order, see [IMPLEMENTATION_ORDER.md](./IMPLEMENTATION_ORDER.md). For deferred features, see [FUTURE_IMPROVEMENTS.md](./FUTURE_IMPROVEMENTS.md)._
