@@ -16,6 +16,6 @@ export async function GET() {
     return NextResponse.json({ leaderboard });
   } catch (error) {
     console.error('Leaderboard error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
