@@ -12,7 +12,8 @@ import {
 } from '@solana/spl-token';
 import { NextResponse } from 'next/server';
 
-const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+const RPC_URL = process.env.NEXT_PUBLIC_HELIUS_RPC || clusterApiUrl('devnet');
+const connection = new Connection(RPC_URL, 'confirmed');
 
 export async function POST(req: Request) {
     try {

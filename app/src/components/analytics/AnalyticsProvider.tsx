@@ -7,7 +7,12 @@ import { useEffect } from 'react';
 import posthog from 'posthog-js';
 
 // Initialize PostHog
-if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+// Initialize PostHog
+if (
+  typeof window !== 'undefined' && 
+  process.env.NEXT_PUBLIC_POSTHOG_KEY &&
+  !process.env.NEXT_PUBLIC_POSTHOG_KEY.includes('placeholder')
+) {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: '/ingest',
     ui_host: 'https://us.posthog.com',
@@ -23,7 +28,11 @@ export function AnalyticsProvider() {
 
   // Track Pageviews
   useEffect(() => {
-    if (pathname && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+    if (
+      pathname && 
+      process.env.NEXT_PUBLIC_POSTHOG_KEY &&
+      !process.env.NEXT_PUBLIC_POSTHOG_KEY.includes('placeholder')
+    ) {
       let url = window.origin + pathname;
       if (searchParams?.toString()) {
         url = url + `?${searchParams.toString()}`;
