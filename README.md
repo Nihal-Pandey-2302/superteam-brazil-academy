@@ -1,7 +1,5 @@
 # Superteam Academy Frontend
 
-![Superteam Academy](https://framerusercontent.com/images/kC0Wz0tV7S1tTqJ5e6Xq7D30.png)
-
 The ultimate Solana Learning Management System (LMS) for Latin America. Built for the Superteam Brazil Bounty.
 
 ## 🔗 [Live Demo](https://superteam-brazil-academy.vercel.app/en) | [GitHub](https://github.com/superteam-brazil/academy-frontend)
