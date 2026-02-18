@@ -13,7 +13,7 @@ interface CourseCardProps {
 
 export function CourseCard({ course, priority = false }: CourseCardProps) {
   return (
-    <Card className="flex flex-col h-full hover:border-[#9945FF]/50 transition-colors">
+    <Card className="group flex flex-col h-full hover:border-[#9945FF]/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(153,69,255,0.15)] bg-[#0A0A0F] border-[#2E2E36] overflow-hidden">
       <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gray-900 relative">
         {course.image ? (
             <Image 
@@ -27,26 +27,29 @@ export function CourseCard({ course, priority = false }: CourseCardProps) {
         ) : (
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F] to-transparent opacity-60" />
         )}
-        <div className="absolute bottom-4 left-4 right-4">
-             <h3 className="text-xl font-bold text-white mb-2 drop-shadow-md">{course.title}</h3>
-             <div className="flex gap-2">
-                 {course.tags?.map(tag => (
-                     <Badge key={tag} variant="secondary" className="text-xs backdrop-blur-sm bg-black/50">{tag}</Badge>
-                 ))}
-             </div>
+        <div className="absolute top-4 left-4 flex gap-2">
+             {course.tags?.map(tag => (
+                 <Badge key={tag} variant="secondary" className="text-xs backdrop-blur-md bg-black/40 border border-white/10">{tag}</Badge>
+             ))}
         </div>
       </div>
       <CardContent className="flex-grow pt-4">
-        <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
+        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-[#14F195] transition-colors">{course.title}</h3>
+        <p className="text-gray-400 text-sm line-clamp-2 mb-4">{course.description}</p>
         
-        <div className="flex items-center gap-4 mt-4 text-xs text-gray-500">
-            <div className="flex items-center gap-1">
-                <BarChart className="h-3 w-3" />
-                <span>{course.difficulty}</span>
+        <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
+            <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                    <BarChart className="h-3 w-3 text-[#9945FF]" />
+                    <span>{course.difficulty}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3 text-[#14F195]" />
+                    <span>{course.duration}</span>
+                </div>
             </div>
-            <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                <span>{course.duration}</span>
+            <div className="font-bold text-[#14F195] bg-[#14F195]/10 px-2 py-0.5 rounded border border-[#14F195]/20">
+                {course.xp} XP
             </div>
         </div>
       </CardContent>

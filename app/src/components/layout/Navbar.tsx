@@ -9,9 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Globe, Menu, X, Settings } from 'lucide-react';
+import { Globe, Menu, X, Settings, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
 
 const WalletMultiButton = dynamic(
   () => import('@solana/wallet-adapter-react-ui').then((mod) => mod.WalletMultiButton),
@@ -41,18 +42,25 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="/courses" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link href="/courses" className={`text-sm font-medium transition-colors hover:text-white ${pathname.includes('/courses') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
             {t('courses')}
+            {pathname.includes('/courses') && <motion.div layoutId="navbar-indicator" className="absolute -bottom-[21px] left-0 right-0 h-[2px] bg-[#9945FF]" />}
           </Link>
-          <Link href="/dashboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link href="/dashboard" className={`text-sm font-medium transition-colors hover:text-white ${pathname.includes('/dashboard') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
             {t('dashboard')}
           </Link>
-          <Link href="/leaderboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link href="/leaderboard" className={`text-sm font-medium transition-colors hover:text-white ${pathname.includes('/leaderboard') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
             {t('leaderboard')}
           </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-4">
+            {/* XP Counter (Mockup for now, will connect to context later) */}
+            <div className="flex items-center gap-2 bg-[#1E1E24] border border-[#2E2E36] rounded-full px-3 py-1.5">
+                <div className="text-xs font-medium text-gray-400">XP</div>
+                <div className="text-sm font-bold text-[#14F195]">1,250</div>
+            </div>
+
           <DropdownMenu onOpenChange={setIsLanguageDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white" aria-label="Select language">

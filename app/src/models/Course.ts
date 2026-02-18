@@ -27,7 +27,8 @@ const CourseSchema = new Schema({
   }],
   tags: [{ type: String }],
   difficulty: { type: String, default: 'Beginner' },
-  duration: { type: String, default: '1h' }
+  duration: { type: String, default: '1h' },
+  isPublished: { type: Boolean, default: true }
 }, { timestamps: true });
 
 const Course = models.Course || model('Course', CourseSchema);

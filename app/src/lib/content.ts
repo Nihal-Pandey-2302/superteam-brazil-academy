@@ -36,9 +36,12 @@ export interface Course {
   tags?: string[];
   difficulty?: string;
   duration?: string;
+  prerequisites?: string[];
   modules: Module[];
+  xp: number;
   _id?: string;
   author?: { name: string };
+  isPublished?: boolean;
 }
 
 export const ContentService = {
@@ -52,6 +55,7 @@ export const ContentService = {
       tags: c.tags || [],
       difficulty: c.difficulty || 'Beginner',
       duration: c.duration || '2h',
+      isPublished: c.isPublished !== undefined ? c.isPublished : true,
       modules: c.modules.map((m: any) => ({
         ...m,
         id: m._id ? m._id.toString() : undefined,
@@ -78,6 +82,7 @@ export const ContentService = {
       tags: c.tags || [],
       difficulty: c.difficulty || 'Beginner',
       duration: c.duration || '2h',
+      isPublished: c.isPublished !== undefined ? c.isPublished : true,
       modules: c.modules.map((m: any) => ({
         ...m,
         id: m._id ? m._id.toString() : undefined,
