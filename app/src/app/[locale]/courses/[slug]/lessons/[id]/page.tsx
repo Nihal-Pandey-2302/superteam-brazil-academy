@@ -109,16 +109,26 @@ export default function LessonPage() {
     
     setCompleting(true);
     try {
-        await ProgressService.completeLesson(walletPublicKey.toString(), lesson.id, lesson.xp);
+        const result = await ProgressService.completeLesson(walletPublicKey.toString(), lesson.id, lesson.xp);
         addXP(lesson.xp); 
         await refreshUser(); 
         setIsCompleted(true);
-        toast.success(`Lesson completed! +${lesson.xp} XP`);
+        
+        // Show on-chain XP feedback
+        if (result.mintSuccess) {
+            toast.success(`+${lesson.xp} XP minted on-chain! 🎉`, { 
+                description: `TX: ${result.mintTx?.slice(0, 20)}...` 
+            });
+        } else {
+            toast.success(`Lesson completed! +${lesson.xp} XP (DB)`, {
+                description: "⚠️ On-chain mint failed — XP saved to database only."
+            });
+        }
         
         if (next && course) {
             setTimeout(() => {
                 router.push(`/courses/${course.slug}/lessons/${next.id}`);
-            }, 1000);
+            }, 1500);
         }
     } catch (error) {
         console.error(error);

@@ -34,19 +34,30 @@ export const ProgressService = {
     });
     const data = await res.json();
 
-    // 2. Mint On-Chain XP (Fire and forget, or await?) 
-    // We'll fire and forget (or await but ignore error to not block UI)
+    // 2. Mint On-Chain XP
+    let mintSuccess = false;
+    let mintTx: string | null = null;
     try {
-        await fetch('/api/solana/mint', {
+        const mintRes = await fetch('/api/solana/mint', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ walletAddress, amount: xpEarned }) 
         });
+        
+        if (mintRes.ok) {
+            const mintData = await mintRes.json();
+            mintSuccess = mintData.success === true;
+            mintTx = mintData.tx || null;
+            console.log('✅ On-chain XP minted:', mintTx);
+        } else {
+            const errorData = await mintRes.json().catch(() => ({}));
+            console.error('❌ Mint API returned error:', mintRes.status, errorData);
+        }
     } catch (e) {
-        console.error("Failed to mint tokens:", e);
+        console.error("❌ Failed to call mint API:", e);
     }
 
-    return data.user;
+    return { ...data.user, mintSuccess, mintTx };
   },
 
   getLeaderboard: async (): Promise<any[]> => {

@@ -18,9 +18,17 @@ const connection = new Connection(RPC_URL, 'confirmed');
 export async function POST(req: Request) {
     try {
         const { walletAddress, amount } = await req.json();
+        
+        console.log(`[MINT] Request: wallet=${walletAddress}, amount=${amount}`);
 
         if (!process.env.SOLANA_PRIVATE_KEY || !process.env.NEXT_PUBLIC_XP_MINT_ADDRESS) {
+            console.error('[MINT] Missing env vars: SOLANA_PRIVATE_KEY or NEXT_PUBLIC_XP_MINT_ADDRESS');
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+        }
+
+        if (!walletAddress || !amount || amount <= 0) {
+            console.error('[MINT] Invalid params:', { walletAddress, amount });
+            return NextResponse.json({ error: 'Invalid wallet or amount' }, { status: 400 });
         }
 
         const secretKey = Uint8Array.from(JSON.parse(process.env.SOLANA_PRIVATE_KEY));
@@ -29,14 +37,13 @@ export async function POST(req: Request) {
         const recipient = new PublicKey(walletAddress);
 
         // Get Recipient's Token Account (or create if needed)
-        // Note: In a real app, the user might need to pay for rent, or we pay for it.
-        // Here, the Authority pays for the ATA creation.
         const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
             connection,
             authority,
             mint,
             recipient
         );
+        console.log(`[MINT] Recipient ATA: ${recipientTokenAccount.address.toString()}`);
 
         // Mint Tokens
         const tx = await mintTo(
@@ -45,13 +52,15 @@ export async function POST(req: Request) {
             mint,
             recipientTokenAccount.address,
             authority,
-            amount // Check decimals. Our mint has 0 decimals, so this is raw amount.
+            amount // 0 decimals, so this is raw amount
         );
 
+        console.log(`[MINT] ✅ Success! TX: ${tx}`);
         return NextResponse.json({ success: true, tx });
 
-    } catch (error) {
-        console.error("Minting Error:", error);
-        return NextResponse.json({ error: 'Failed to mint tokens' }, { status: 500 });
+    } catch (error: any) {
+        console.error("[MINT] ❌ Minting Error:", error.message);
+        if (error.logs) console.error("[MINT] TX Logs:", error.logs);
+        return NextResponse.json({ error: 'Failed to mint tokens', details: error.message }, { status: 500 });
     }
 }
