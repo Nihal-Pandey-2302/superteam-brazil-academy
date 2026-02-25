@@ -17,9 +17,12 @@ export async function POST(req: Request) {
     try {
         const { walletAddress, courseTitle, courseSlug } = await req.json();
 
+        console.log(`[cNFT] Request: wallet=${walletAddress}, course=${courseTitle}`);
+
         if (!process.env.SOLANA_PRIVATE_KEY || 
             !process.env.NEXT_PUBLIC_CREDENTIAL_TREE_ADDRESS || 
             !process.env.NEXT_PUBLIC_COLLECTION_MINT) {
+            console.error('[cNFT] Missing env vars');
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         }
 
@@ -39,15 +42,19 @@ export async function POST(req: Request) {
         const treeAddress = publicKey(process.env.NEXT_PUBLIC_CREDENTIAL_TREE_ADDRESS);
         const collectionMint = publicKey(process.env.NEXT_PUBLIC_COLLECTION_MINT);
         
-        console.log(`Minting cNFT to ${walletAddress} for ${courseTitle}`);
+        // Use hosted metadata JSON with full description
+        const metadataUri = `https://raw.githubusercontent.com/Nihal-Pandey-2302/superteam-brazil-academy/main/app/public/credential-metadata.json`;
+
+        console.log(`[cNFT] Minting to ${walletAddress} for "${courseTitle}"`);
 
         const { signature } = await mintToCollectionV1(umi, {
             leafOwner: publicKey(walletAddress),
             merkleTree: treeAddress,
             collectionMint: collectionMint,
             metadata: {
-                name: `Completed: ${courseTitle}`,
-                uri: `https://superteam.fun/credentials/${courseSlug}`, // Placeholder
+                name: `${courseTitle} — Certificate`,
+                symbol: "STCRED",
+                uri: metadataUri,
                 sellerFeeBasisPoints: 0,
                 collection: { key: collectionMint, verified: false },
                 creators: [
@@ -56,15 +63,14 @@ export async function POST(req: Request) {
             },
         }).sendAndConfirm(umi);
 
-        // Convert signature to string (Uint8Array)
         const sigString = Buffer.from(signature).toString('hex');
-        // Actually base58 is better for Solana sigs, generally we use bs58
-        // But for simplicty in this demo helper...
+        console.log(`[cNFT] ✅ Minted! Sig: ${sigString.slice(0, 40)}...`);
         
-        return NextResponse.json({ success: true, signature: "Minted" });
+        return NextResponse.json({ success: true, signature: sigString });
 
-    } catch (error) {
-        console.error("cNFT Minting Error:", error);
-        return NextResponse.json({ error: 'Failed to mint credential' }, { status: 500 });
+    } catch (error: any) {
+        console.error("[cNFT] ❌ Minting Error:", error.message);
+        if (error.logs) console.error("[cNFT] TX Logs:", error.logs);
+        return NextResponse.json({ error: 'Failed to mint credential', details: error.message }, { status: 500 });
     }
 }
