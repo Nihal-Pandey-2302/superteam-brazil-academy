@@ -52,7 +52,7 @@ export async function POST(req: Request) {
             merkleTree: treeAddress,
             collectionMint: collectionMint,
             metadata: {
-                name: `${courseTitle} — Certificate`,
+                name: `${courseTitle.slice(0, 20)} — Cert`.slice(0, 32),
                 symbol: "STCRED",
                 uri: metadataUri,
                 sellerFeeBasisPoints: 0,

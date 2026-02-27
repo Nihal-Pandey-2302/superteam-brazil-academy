@@ -3,15 +3,22 @@ import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, BarChart } from 'lucide-react';
+import { Clock, BarChart, CheckCircle2, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 
 interface CourseCardProps {
   course: Course;
   priority?: boolean;
+  completedLessons?: string[];
 }
 
-export function CourseCard({ course, priority = false }: CourseCardProps) {
+export function CourseCard({ course, priority = false, completedLessons = [] }: CourseCardProps) {
+  const allLessons = course.modules?.flatMap(m => m.lessons) ?? [];
+  const totalLessons = allLessons.length;
+  const completedCount = allLessons.filter(l => completedLessons.includes(l.id)).length;
+  const isCourseCompleted = totalLessons > 0 && completedCount === totalLessons;
+  const isStarted = completedCount > 0 && !isCourseCompleted;
+
   return (
     <Card className="group flex flex-col h-full hover:border-[#9945FF]/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(153,69,255,0.15)] bg-[#0A0A0F] border-[#2E2E36] overflow-hidden">
       <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gray-900 relative">
@@ -27,11 +34,41 @@ export function CourseCard({ course, priority = false }: CourseCardProps) {
         ) : (
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F] to-transparent opacity-60" />
         )}
-        <div className="absolute top-4 left-4 flex gap-2">
+        {/* Tags */}
+        <div className="absolute top-3 left-3 flex gap-2">
              {course.tags?.map(tag => (
                  <Badge key={tag} variant="secondary" className="text-xs backdrop-blur-md bg-black/40 border border-white/10">{tag}</Badge>
              ))}
         </div>
+
+        {/* Completion overlay badge */}
+        {isCourseCompleted && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-2 bg-[#14F195]/10 border border-[#14F195]/30 backdrop-blur-md rounded-xl px-6 py-4">
+              <CheckCircle2 className="h-10 w-10 text-[#14F195]" />
+              <span className="text-[#14F195] font-bold text-sm">Course Completed</span>
+            </div>
+          </div>
+        )}
+
+        {/* Progress indicator */}
+        {isStarted && (
+          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/40">
+            <div 
+              className="h-full bg-[#9945FF] transition-all"
+              style={{ width: `${(completedCount / totalLessons) * 100}%` }}
+            />
+          </div>
+        )}
+
+        {/* New badge */}
+        {!isStarted && !isCourseCompleted && (
+          <div className="absolute top-3 right-3">
+            <Badge className="text-xs bg-[#9945FF]/20 border border-[#9945FF]/40 text-[#9945FF]">
+              <Sparkles className="h-3 w-3 mr-1" /> New
+            </Badge>
+          </div>
+        )}
       </div>
       <CardContent className="flex-grow pt-4">
         <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-[#14F195] transition-colors">{course.title}</h3>
@@ -47,6 +84,11 @@ export function CourseCard({ course, priority = false }: CourseCardProps) {
                     <Clock className="h-3 w-3 text-[#14F195]" />
                     <span>{course.duration}</span>
                 </div>
+                {totalLessons > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span>{completedCount}/{totalLessons} lessons</span>
+                  </div>
+                )}
             </div>
             <div className="font-bold text-[#14F195] bg-[#14F195]/10 px-2 py-0.5 rounded border border-[#14F195]/20">
                 {course.xp} XP
@@ -54,12 +96,13 @@ export function CourseCard({ course, priority = false }: CourseCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full" variant="default">
+        <Button asChild className={`w-full ${isCourseCompleted ? 'bg-[#14F195] hover:bg-[#10c479] text-black' : isStarted ? 'bg-[#9945FF] hover:bg-[#7a37cc] text-white' : ''}`} variant={isCourseCompleted || isStarted ? 'default' : 'default'}>
           <Link href={`/courses/${course.slug}`}>
-            Start Learning
+            {isCourseCompleted ? '✓ Review Course' : isStarted ? 'Continue Learning' : 'Start Learning'}
           </Link>
         </Button>
       </CardFooter>
     </Card>
   );
 }
+

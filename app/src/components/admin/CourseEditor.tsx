@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { updateCourse } from '@/actions/admin-courses';
 import { toast } from 'sonner';
-import { Loader2, ArrowLeft, Save } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Globe, Lock } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { CurriculumEditor } from '@/components/admin/CurriculumEditor';
 
@@ -30,7 +30,8 @@ export function CourseEditor({ course }: CourseEditorProps) {
     difficulty: course.difficulty || 'Beginner',
     duration: course.duration || '1h',
     image: course.image || '',
-    tags: course.tags?.join(', ') || ''
+    tags: course.tags?.join(', ') || '',
+    isPublished: course.isPublished ?? true
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -122,6 +123,28 @@ export function CourseEditor({ course }: CourseEditorProps) {
                     <Label>Tags (comma separated)</Label>
                     <Input name="tags" value={formData.tags} onChange={handleChange} className="bg-[#0A0A0F] border-[#2E2E36]" />
                   </div>
+              </div>
+
+              {/* Published Toggle */}
+              <div className="flex items-center justify-between p-4 rounded-lg border border-[#2E2E36] bg-[#0A0A0F]">
+                <div className="flex items-center gap-3">
+                  {formData.isPublished ? <Globe className="h-5 w-5 text-[#14F195]" /> : <Lock className="h-5 w-5 text-gray-500" />}
+                  <div>
+                    <p className="text-sm font-semibold text-white">{formData.isPublished ? 'Published' : 'Draft'}</p>
+                    <p className="text-xs text-gray-400">{formData.isPublished ? 'Last lesson shows "Complete & Mint 🏆" button — enables cNFT minting.' : 'Learners see "Mark Complete" without minting.'}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, isPublished: !formData.isPublished })}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    formData.isPublished ? 'bg-[#14F195]' : 'bg-[#2E2E36]'
+                  }`}
+                >
+                  <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                    formData.isPublished ? 'translate-x-6' : 'translate-x-0'
+                  }`} />
+                </button>
               </div>
             </CardContent>
           </Card>

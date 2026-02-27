@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/ui/empty-states';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useGamification } from '@/context/GamificationContext';
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -19,6 +20,7 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [loading, setLoading] = useState(true);
+  const { completedLessons } = useGamification();
 
   useEffect(() => {
     fetch('/api/courses')
@@ -112,7 +114,7 @@ export default function CoursesPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2 }}
                 >
-                    <CourseCard course={course} priority={index < 2} />
+                    <CourseCard course={course} priority={index < 2} completedLessons={completedLessons} />
                 </motion.div>
                 ))}
             </AnimatePresence>

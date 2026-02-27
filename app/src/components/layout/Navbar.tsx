@@ -48,9 +48,8 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="/courses" className={`text-sm font-medium transition-colors hover:text-white ${pathname.includes('/courses') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
+          <Link href="/courses" className={`text-sm font-medium transition-colors hover:text-white relative ${pathname.includes('/courses') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
             {t('courses')}
-            {pathname.includes('/courses') && <motion.div layoutId="navbar-indicator" className="absolute -bottom-[21px] left-0 right-0 h-[2px] bg-[#9945FF]" />}
           </Link>
           <Link href="/dashboard" className={`text-sm font-medium transition-colors hover:text-white ${pathname.includes('/dashboard') ? 'text-[#9945FF] font-bold' : 'text-gray-300'}`}>
             {t('dashboard')}

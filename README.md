@@ -2,7 +2,7 @@
 
 The ultimate Solana Learning Management System (LMS) for Latin America. Built for the Superteam Brazil Bounty.
 
-## 🔗 [Live Demo](https://superteam-brazil-academy.vercel.app/en) | [GitHub](https://github.com/superteam-brazil/academy-frontend)
+## 🔗 [Live Demo](https://superteam-brazil-academy.vercel.app/en) | [GitHub](https://github.com/superteam-brazil/academy-frontend) | [📺 Demo Video](https://youtu.be/58Y5Kw6dN8I)
 
 ## 🚀 Features
 

@@ -20,10 +20,11 @@ export async function POST(req: Request) {
         username: `Solanaut-${walletAddress.slice(0, 4)}`,
         xp: 0,
         level: 1,
-        streak: 1, // First login is day 1
+        streak: 1,
         lastActiveDate: new Date(),
         achievements: [],
-        completedLessons: []
+        completedLessons: [],
+        mintedCourses: []
       });
     } else {
         // Calculate streak before updating lastActiveDate
@@ -35,7 +36,12 @@ export async function POST(req: Request) {
         await user.save();
     }
 
-    return NextResponse.json({ user });
+    return NextResponse.json({ 
+      user: {
+        ...user.toObject ? user.toObject() : user,
+        mintedCourses: user.mintedCourses || []
+      }
+    });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: String(error) }, { status: 500 });

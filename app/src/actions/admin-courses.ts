@@ -73,7 +73,8 @@ export async function updateCourse(id: string, data: any) {
             difficulty: data.difficulty,
             duration: data.duration,
             tags: data.tags,
-            image: data.image
+            image: data.image,
+            isPublished: data.isPublished
         }
     });
 
