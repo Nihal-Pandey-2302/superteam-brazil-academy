@@ -3,9 +3,10 @@ import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from '@solana/
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
 import { publicKey as umiPublicKey } from '@metaplex-foundation/umi';
+import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token';
 
 // Real Devnet Assets
-export const XP_TOKEN_MINT = new PublicKey(process.env.NEXT_PUBLIC_XP_MINT_ADDRESS || "GJumUBRPeu4mx7Cx11TtjcAA5b2gvdAteZzgpz5fwRHZ"); 
+export const XP_TOKEN_MINT = new PublicKey(process.env.NEXT_PUBLIC_XP_MINT_ADDRESS || "xpXPUjkfk7t4AJF1tYUoyAYxzuM5DhinZWS1WjfjAu3"); 
 export const CREDENTIAL_TREE_ADDRESS = umiPublicKey(process.env.NEXT_PUBLIC_CREDENTIAL_TREE_ADDRESS || "45n28QSmaWaAtUDVYPsTensja45tg1KSG3E5Y3szKNgd"); 
 export const COLLECTION_MINT = umiPublicKey(process.env.NEXT_PUBLIC_COLLECTION_MINT || "2TTHTuH5Tva2Z7tnNcGaDfCQcnEzFkAUoPbp8eGvkVHB"); 
 
@@ -49,16 +50,30 @@ class SolanaServiceImpl {
 
   async getXPBalance(walletAddress: string): Promise<number> {
     try {
-      const tokenAccounts = await this.connection.getParsedTokenAccountsByOwner(
-        new PublicKey(walletAddress),
+      const ownerPubkey = new PublicKey(walletAddress);
+      const mintStr = XP_TOKEN_MINT.toBase58();
+
+      // Try standard SPL Token program first (filter by mint)
+      const stdAccounts = await this.connection.getParsedTokenAccountsByOwner(
+        ownerPubkey,
         { mint: XP_TOKEN_MINT }
       );
-      
-      const balance = tokenAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0;
-      return balance;
+      if (stdAccounts.value.length > 0) {
+        return stdAccounts.value[0]?.account.data.parsed.info.tokenAmount.uiAmount || 0;
+      }
+
+      // Fallback: Try Token-2022 program
+      const t22Accounts = await this.connection.getParsedTokenAccountsByOwner(
+        ownerPubkey,
+        { programId: TOKEN_2022_PROGRAM_ID }
+      );
+      const t22Account = t22Accounts.value.find(
+        (acc) => acc.account.data.parsed.info.mint === mintStr
+      );
+      return t22Account?.account.data.parsed.info.tokenAmount.uiAmount || 0;
     } catch (error) {
       console.error("Error fetching XP balance:", error);
-      return 0; // Return 0 on error/mock
+      return 0;
     }
   }
 

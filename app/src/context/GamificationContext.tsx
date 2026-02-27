@@ -33,27 +33,33 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   
   const refreshUser = async () => {
     if (connected && publicKey) {
-        try {
-            // Parallel fetch: DB User + On-Chain Data
-            const [user, sol, spl] = await Promise.all([
-                ProgressService.login(publicKey.toString()),
-                SolanaService.getBalance(publicKey.toString()),
-                SolanaService.getXPBalance(publicKey.toString())
-            ]);
+        // Parallel fetch: DB User + On-Chain Data (each independent)
+        const [userResult, solResult, splResult] = await Promise.allSettled([
+            ProgressService.login(publicKey.toString()),
+            SolanaService.getBalance(publicKey.toString()),
+            SolanaService.getXPBalance(publicKey.toString())
+        ]);
 
-            if (user) {
-                setXp(user.xp);
-                setLevel(user.level);
-                setStreak(user.streak);
-                setAchievements(user.achievements || []);
-                setCompletedLessons(user.completedLessons || []);
-            }
-            
-            setSolBalance(sol);
-            setOnChainXP(spl);
+        // DB user (may fail if no database configured)
+        if (userResult.status === 'fulfilled' && userResult.value) {
+            const user = userResult.value;
+            setXp(user.xp);
+            setLevel(user.level);
+            setStreak(user.streak);
+            setAchievements(user.achievements || []);
+            setCompletedLessons(user.completedLessons || []);
+        } else if (userResult.status === 'rejected') {
+            console.warn("DB login failed (non-blocking):", userResult.reason);
+        }
 
-        } catch (e) {
-            console.error("Failed to sync user:", e);
+        // On-chain SOL balance
+        if (solResult.status === 'fulfilled') {
+            setSolBalance(solResult.value);
+        }
+
+        // On-chain XP token balance
+        if (splResult.status === 'fulfilled') {
+            setOnChainXP(splResult.value);
         }
     }
   };
